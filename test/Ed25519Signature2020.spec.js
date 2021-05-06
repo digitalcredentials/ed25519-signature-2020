@@ -11,7 +11,7 @@ import {Ed25519VerificationKey2020} from
 
 import {Ed25519VerificationKey2018} from
   '@digitalbazaar/ed25519-verification-key-2018';
-import {Ed25519Signature2020, suiteContext} from '..';
+import {Ed25519Signature2020, suiteContext} from '../lib/index';
 import {
   credential,
   mockKeyPair2020,
@@ -29,6 +29,8 @@ describe('Ed25519Signature2020', () => {
       should.exist(Ed25519Signature2020);
       should.exist(suiteContext);
       suiteContext.should.have.keys([
+        'CONTEXT',
+        'CONTEXT_URL',
         'appContextMap',
         'constants',
         'contexts',

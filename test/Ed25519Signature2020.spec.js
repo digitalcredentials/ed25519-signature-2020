@@ -3,14 +3,13 @@
  */
 import {expect} from 'chai';
 
-import jsigs from 'jsonld-signatures';
+import jsigs from '@digitalcredentials/jsonld-signatures';
 const {purposes: {AssertionProofPurpose}} = jsigs;
 
 import {Ed25519VerificationKey2020} from
-  '@digitalbazaar/ed25519-verification-key-2020';
-
+  '@digitalcredentials//ed25519-verification-key-2020';
 import {Ed25519VerificationKey2018} from
-  '@digitalbazaar/ed25519-verification-key-2018';
+    '@digitalbazaar/ed25519-verification-key-2018';
 import {Ed25519Signature2020, suiteContext} from '../lib/index';
 import {
   credential,

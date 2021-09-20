@@ -1,4 +1,4 @@
-# @digitalbazaar/ed25519-signature-2020 Changelog
+# @digitalcredentials/ed25519-signature-2020 Changelog
 
 ## 3.0.0 - 2021-06-19
 

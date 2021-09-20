@@ -1,8 +1,7 @@
-# Ed25519Signature2020 suite _(@digitalbazaar/ed25519-signature-2020)_
+# Ed25519Signature2020 suite _(@digitalcredentials/ed25519-signature-2020)_
 
-[![Build status](https://img.shields.io/github/workflow/status/digitalbazaar/ed25519-signature-2020/Node.js%20CI)](https://github.com/digitalbazaar/ed25519-signature-2020/actions?query=workflow%3A%22Node.js+CI%22)
-[![Coverage status](https://img.shields.io/codecov/c/github/digitalbazaar/ed25519-signature-2020)](https://codecov.io/gh/digitalbazaar/ed25519-signature-2020)
-[![NPM Version](https://img.shields.io/npm/v/@digitalbazaar/ed25519-signature-2020.svg)](https://npm.im/digitalbazaar/ed25519-signature-2020)
+[![Build status](https://img.shields.io/github/workflow/status/digitalcredentials/ed25519-signature-2020/Node.js%20CI)](https://github.com/digitalcredentials/ed25519-signature-2020/actions?query=workflow%3A%22Node.js+CI%22)
+[![NPM Version](https://img.shields.io/npm/v/@digitalcredentials/ed25519-signature-2020.svg)](https://npm.im/digitalcredentials/ed25519-signature-2020)
 
 > Ed25519Signature2020 Linked Data Proof suite for use with jsonld-signatures.
 
@@ -17,6 +16,9 @@
 - [License](#license)
 
 ## Background
+
+(Forked from [`digitalbazaar/ed25519-signature-2020` v3.0.0](https://github.com/digitalbazaar/ed25519-verification-key-2020)
+to provide TypeScript compatibility.)
 
 For use with https://github.com/digitalbazaar/jsonld-signatures v9.0 and above.
 
@@ -35,7 +37,7 @@ TBD
 To install locally (for development):
 
 ```
-git clone https://github.com/digitalbazaar/ed25519-signature-2020.git
+git clone https://github.com/digitalcredentials/ed25519-signature-2020.git
 cd ed25519-signature-2020
 npm install
 ```
@@ -129,11 +131,7 @@ PRs accepted.
 If editing the Readme, please conform to the
 [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
-## Commercial Support
-
-Commercial support for this library is available upon request from
-Digital Bazaar: support@digitalbazaar.com
-
 ## License
 
-[New BSD License (3-clause)](LICENSE) © 2020 Digital Bazaar
+* MIT License - DCC - TypeScript compatibility.
+* New BSD License (3-clause) © 2020-2021 Digital Bazaar - Initial implementation.

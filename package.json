@@ -30,8 +30,7 @@
     "@digitalcredentials/base58-universal": "^1.0.1",
     "ed25519-signature-2020-context": "^1.0.1",
     "ed25519-signature-2018-context": "^1.1.0",
-    "jsonld": "^5.2.0",
-    "jsonld-signatures": "^9.0.1"
+    "@digitalcredentials/jsonld-signatures": "^9.3.1"
   },
   "devDependencies": {
     "@digitalbazaar/ed25519-verification-key-2018": "^3.1.1",
@@ -68,6 +67,7 @@
     "build": "npm run clear && npm run rollup && ./build-dist.sh",
     "clear": "rimraf dist/*",
     "prepare": "npm run build",
+    "prepack": "npm run build",
     "test": "npm run lint && npm run test-node && npm run test-karma",
     "test-karma": "karma start karma.conf.js",
     "test-node": "cross-env NODE_ENV=test mocha -r esm --preserve-symlinks -t 30000 -A -R ${REPORTER:-spec} --require test/test-mocha.js test/*.spec.js",

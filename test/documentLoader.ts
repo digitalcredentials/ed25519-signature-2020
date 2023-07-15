@@ -2,12 +2,13 @@
  * Copyright (c) 2021 Digital Bazaar, Inc. All rights reserved.
  */
 import {
-  mockKeyPair2020,
   controllerDoc2020,
+  mockKeyPair2020,
   mockPublicKey2020,
-} from './mock-data.js';
+} from './mock-data';
+// @ts-ignore
 import ed25519Context2018 from 'ed25519-signature-2018-context';
-import {securityLoader} from '@digitalbazaar/security-document-loader';
+import {securityLoader} from '@digitalcredentials/security-document-loader';
 
 export const loader = securityLoader();
 

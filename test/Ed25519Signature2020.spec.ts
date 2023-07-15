@@ -3,14 +3,13 @@
  */
 import {expect} from 'chai';
 
-import jsigs from '@digitalcredentials/jsonld-signatures';
-const {purposes: {AssertionProofPurpose}} = jsigs;
+import {AssertionProofPurpose, sign, verify} from '@digitalcredentials/linked-data-integrity'
 
 import {Ed25519VerificationKey2020} from
   '@digitalcredentials//ed25519-verification-key-2020';
 import {Ed25519VerificationKey2018} from
   '@digitalbazaar/ed25519-verification-key-2018';
-import {Ed25519Signature2020, suiteContext} from '../lib/index';
+import {Ed25519Signature2020, suiteContext} from '../src/index';
 import {
   credential,
   mockKeyPair2020,
@@ -25,9 +24,9 @@ const documentLoader = loader.build();
 describe('Ed25519Signature2020', () => {
   describe('exports', () => {
     it('it should have proper exports', async () => {
-      should.exist(Ed25519Signature2020);
-      should.exist(suiteContext);
-      suiteContext.should.have.keys([
+      expect(Ed25519Signature2020).to.exist;
+      expect(suiteContext).to.exist;
+      expect(suiteContext).to.have.keys([
         'CONTEXT',
         'CONTEXT_URL',
         'appContextMap',
@@ -35,8 +34,8 @@ describe('Ed25519Signature2020', () => {
         'contexts',
         'documentLoader'
       ]);
-      should.exist(Ed25519Signature2020.CONTEXT_URL);
-      Ed25519Signature2020.CONTEXT_URL.should
+      expect(Ed25519Signature2020.CONTEXT_URL).to.exist;
+      expect(Ed25519Signature2020.CONTEXT_URL).to
         .equal(suiteContext.constants.CONTEXT_URL);
       const context = Ed25519Signature2020.CONTEXT;
       context.should.exist;
@@ -53,7 +52,7 @@ describe('Ed25519Signature2020', () => {
       const suite = new Ed25519Signature2020({key: keyPair});
       suite.date = '2010-01-01T19:23:24Z';
 
-      const signedCredential = await jsigs.sign(unsignedCredential, {
+      const signedCredential = await sign(unsignedCredential, {
         suite,
         purpose: new AssertionProofPurpose(),
         documentLoader
@@ -76,7 +75,7 @@ describe('Ed25519Signature2020', () => {
       const suite = new Ed25519Signature2020({signer});
       suite.date = '2010-01-01T19:23:24Z';
 
-      const signedCredential = await jsigs.sign(unsignedCredential, {
+      const signedCredential = await sign(unsignedCredential, {
         suite,
         purpose: new AssertionProofPurpose(),
         documentLoader
@@ -95,7 +94,7 @@ describe('Ed25519Signature2020', () => {
       const suite = new Ed25519Signature2020();
       let err;
       try {
-        signedCredential = await jsigs.sign(unsignedCredential, {
+        signedCredential = await sign(unsignedCredential, {
           suite,
           purpose: new AssertionProofPurpose(),
           documentLoader
@@ -124,7 +123,7 @@ describe('Ed25519Signature2020', () => {
       });
       const suite = new Ed25519Signature2020({key: keyPair});
 
-      const signedCredential = await jsigs.sign(unsignedCredential, {
+      const signedCredential = await sign(unsignedCredential, {
         suite,
         purpose: new AssertionProofPurpose(),
         documentLoader
@@ -155,7 +154,7 @@ describe('Ed25519Signature2020', () => {
 
       let err;
       try {
-        await jsigs.sign(unsignedCredential, {
+        await sign(unsignedCredential, {
           suite,
           purpose: new AssertionProofPurpose(),
           documentLoader,
@@ -181,7 +180,7 @@ describe('Ed25519Signature2020', () => {
       const suite = new Ed25519Signature2020({key: keyPair});
       suite.date = '2010-01-01T19:23:24Z';
 
-      signedCredential = await jsigs.sign(unsignedCredential, {
+      signedCredential = await sign(unsignedCredential, {
         suite,
         purpose: new AssertionProofPurpose(),
         documentLoader
@@ -190,7 +189,7 @@ describe('Ed25519Signature2020', () => {
 
     it('should verify a document', async () => {
       const suite = new Ed25519Signature2020();
-      const result = await jsigs.verify(signedCredential, {
+      const result = await verify(signedCredential, {
         suite,
         purpose: new AssertionProofPurpose(),
         documentLoader
@@ -206,7 +205,7 @@ describe('Ed25519Signature2020', () => {
         // intentionally modify proofValue type to not be string
         signedCredentialCopy.proof.proofValue = {};
 
-        const result = await jsigs.verify(signedCredentialCopy, {
+        const result = await verify(signedCredentialCopy, {
           suite,
           purpose: new AssertionProofPurpose(),
           documentLoader
@@ -228,7 +227,7 @@ describe('Ed25519Signature2020', () => {
         // intentionally modify proofValue to be undefined
         signedCredentialCopy.proof.proofValue = undefined;
 
-        const result = await jsigs.verify(signedCredentialCopy, {
+        const result = await verify(signedCredentialCopy, {
           suite,
           purpose: new AssertionProofPurpose(),
           documentLoader
@@ -251,7 +250,7 @@ describe('Ed25519Signature2020', () => {
         // intentionally modify proofValue to not start with 'z'
         signedCredentialCopy.proof.proofValue = 'a';
 
-        const result = await jsigs.verify(signedCredentialCopy, {
+        const result = await verify(signedCredentialCopy, {
           suite,
           purpose: new AssertionProofPurpose(),
           documentLoader
@@ -274,7 +273,7 @@ describe('Ed25519Signature2020', () => {
         // intentionally modify proof type to be Ed25519Signature2018
         signedCredentialCopy.proof.type = 'Ed25519Signature2018';
 
-        const result = await jsigs.verify(signedCredentialCopy, {
+        const result = await verify(signedCredentialCopy, {
           suite,
           purpose: new AssertionProofPurpose(),
           documentLoader
@@ -297,7 +296,7 @@ describe('Ed25519Signature2020', () => {
       const suite = new Ed25519Signature2020({key: keyPair});
       suite.date = '2010-01-01T19:23:24Z';
 
-      signedCredential = await jsigs.sign(unsignedCredential, {
+      signedCredential = await sign(unsignedCredential, {
         suite,
         purpose: new AssertionProofPurpose(),
         documentLoader
@@ -310,7 +309,7 @@ describe('Ed25519Signature2020', () => {
         loader.addStatic(mockPublicKey2018.id, mockPublicKey2018);
         const documentLoader = loader.build();
         const suite = new Ed25519Signature2020();
-        const result = await jsigs.verify(signedCredential, {
+        const result = await verify(signedCredential, {
           suite,
           purpose: new AssertionProofPurpose(),
           documentLoader
@@ -327,7 +326,7 @@ describe('Ed25519Signature2020', () => {
         mockPublicKey2018WithoutContext);
       const documentLoader = loader.build();
       const suite = new Ed25519Signature2020();
-      const result = await jsigs.verify(signedCredential, {
+      const result = await verify(signedCredential, {
         suite,
         purpose: new AssertionProofPurpose(),
         documentLoader
@@ -349,7 +348,7 @@ describe('Ed25519Signature2020', () => {
         mockPublicKey2018With2020Context);
       const documentLoader = loader.build();
       const suite = new Ed25519Signature2020();
-      const result = await jsigs.verify(signedCredential, {
+      const result = await verify(signedCredential, {
         suite,
         purpose: new AssertionProofPurpose(),
         documentLoader

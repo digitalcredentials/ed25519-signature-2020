@@ -30,7 +30,7 @@
     "@digitalcredentials/base58-universal": "^1.0.1",
     "ed25519-signature-2020-context": "^1.0.1",
     "ed25519-signature-2018-context": "^1.1.0",
-    "@digitalcredentials/jsonld-signatures": "digitalcredentials/jsonld-signatures#v10.x"
+    "@digitalcredentials/jsonld-signatures": "^10.0.0"
   },
   "devDependencies": {
     "@digitalbazaar/ed25519-verification-key-2018": "^3.1.1",

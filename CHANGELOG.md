@@ -1,5 +1,12 @@
 # @digitalcredentials/ed25519-signature-2020 Changelog
 
+## 4.0.0 - 2024-02-07
+
+### Changed
+- **BREAKING**: Update date to `@digitalcredentials/jsonld-signatures` v10.
+  - Switch back to DB's `jsonld` and `http-client`.
+  - Switch to Sphereon's fork `@sphereon/isomorphic-webclient`
+
 ## 3.0.0 - 2021-06-19
 
 ### Fixed

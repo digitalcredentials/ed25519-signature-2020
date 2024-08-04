@@ -1,9 +1,9 @@
 # @digitalcredentials/ed25519-signature-2020 Changelog
 
-## 4.1.0 -
+## 5.0.0 - 2024-08-03
 
 ### Changed
-- Update to `@digitalcredentials/jsonld-signatures` v10.1.0 (latest Sphereon webcrypto fork, latest DB http-client).
+- **BREAKING**: Update to `@digitalcredentials/jsonld-signatures` v11.0.0 (latest Sphereon webcrypto fork, latest DCC forks of jsonld and http-client).
 - **BREAKING**: Reverts cache clearing behavior of v10.0.0.
 
 ## 4.0.0 - 2024-02-07

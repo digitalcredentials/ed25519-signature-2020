@@ -1,6 +1,6 @@
 # @digitalcredentials/ed25519-signature-2020 Changelog
 
-## 6.0.0 -
+## 6.0.0 - 2024-09-17
 
 ### Changed
 - **BREAKING**: The dependency `@digitalcredentials/jsonld-signatures@12.0.0` now requires

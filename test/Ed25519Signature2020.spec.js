@@ -1,26 +1,36 @@
 /*!
- * Copyright (c) 2021 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2021-2024 Digital Bazaar, Inc. All rights reserved.
  */
 import {expect} from 'chai';
 
 import jsigs from '@digitalcredentials/jsonld-signatures';
 const {purposes: {AssertionProofPurpose}} = jsigs;
 
-import {Ed25519VerificationKey2020} from
-  '@digitalcredentials/ed25519-verification-key-2020';
-import {Ed25519VerificationKey2018} from
-  '@digitalbazaar/ed25519-verification-key-2018';
-import {Ed25519Signature2020, suiteContext} from '../lib/index';
 import {
+  Ed25519VerificationKey2020
+} from '@digitalcredentials/ed25519-verification-key-2020';
+
+import {
+  controllerDoc2018,
   credential,
-  mockKeyPair2020,
   mockKeyPair2018,
-  mockPublicKey2018,
-  controllerDoc2018
+  mockKeyPair2020,
+  mockPublicKey2018
 } from './mock-data.js';
-import {loader} from './documentLoader';
+import {Ed25519Signature2020, suiteContext} from '../lib/index.js';
+import {
+  Ed25519VerificationKey2018
+} from '@digitalbazaar/ed25519-verification-key-2018';
+import {loader} from './documentLoader.js';
 
 const documentLoader = loader.build();
+
+const poisonData = [];
+for(let i = 0; i < 10; ++i) {
+  poisonData.push({
+    alumniOf: new Array(10).fill({alumniOf: 'poison'})
+  });
+}
 
 describe('Ed25519Signature2020', () => {
   describe('exports', () => {
@@ -28,12 +38,12 @@ describe('Ed25519Signature2020', () => {
       should.exist(Ed25519Signature2020);
       should.exist(suiteContext);
       suiteContext.should.have.keys([
-        'CONTEXT',
-        'CONTEXT_URL',
         'appContextMap',
         'constants',
         'contexts',
-        'documentLoader'
+        'documentLoader',
+        'CONTEXT',
+        'CONTEXT_URL'
       ]);
       should.exist(Ed25519Signature2020.CONTEXT_URL);
       Ed25519Signature2020.CONTEXT_URL.should
@@ -62,6 +72,77 @@ describe('Ed25519Signature2020', () => {
       expect(signedCredential.proof.proofValue).to
         .equal('z3MvGcVxzRzzpKF1HA11EjvfPZsN8NAb7kXBRfeTm3CBg2gcJLQM5hZNmj6Cc' +
           'd9Lk4C1YueiFZvkSx4FuHVYVouQk');
+    });
+
+    it.skip('should fail to sign a document with a poison graph', async () => {
+      const unsignedCredential = {...credential};
+      const keyPair = await Ed25519VerificationKey2020.from({
+        ...mockKeyPair2020
+      });
+      const suite = new Ed25519Signature2020({
+        key: keyPair
+      });
+      suite.date = '2010-01-01T19:23:24Z';
+      unsignedCredential.alumniOf = poisonData;
+
+      let error;
+      try {
+        await jsigs.sign(unsignedCredential, {
+          suite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error = e;
+      }
+      expect(error).to.exist;
+      expect(error.message).to.include('Maximum deep iterations');
+    });
+
+    it('should fail to sign with undefined term', async () => {
+      const unsignedCredential = JSON.parse(JSON.stringify(credential));
+      unsignedCredential.undefinedTerm = 'foo';
+      const keyPair = await Ed25519VerificationKey2020.from({
+        ...mockKeyPair2020
+      });
+      const suite = new Ed25519Signature2020({key: keyPair});
+      suite.date = '2010-01-01T19:23:24Z';
+
+      let error;
+      try {
+        await jsigs.sign(unsignedCredential, {
+          suite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error = e;
+      }
+      expect(error).to.exist;
+      expect(error.name).to.equal('jsonld.ValidationError');
+    });
+
+    it('should fail to sign with relative type URL', async () => {
+      const unsignedCredential = JSON.parse(JSON.stringify(credential));
+      unsignedCredential.type.push('UndefinedType');
+      const keyPair = await Ed25519VerificationKey2020.from({
+        ...mockKeyPair2020
+      });
+      const suite = new Ed25519Signature2020({key: keyPair});
+      suite.date = '2010-01-01T19:23:24Z';
+
+      let error;
+      try {
+        await jsigs.sign(unsignedCredential, {
+          suite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error = e;
+      }
+      expect(error).to.exist;
+      expect(error.name).to.equal('jsonld.ValidationError');
     });
 
     it('signs a document given a signer object', async () => {
@@ -198,6 +279,21 @@ describe('Ed25519Signature2020', () => {
       expect(result.verified).to.be.true;
     });
 
+    it.skip('should fail to verify a document with a poison graph', async () => {
+      const poisonCredential = {...signedCredential};
+      const suite = new Ed25519Signature2020();
+      poisonCredential.alumniOf = poisonData;
+
+      const result = await jsigs.verify(poisonCredential, {
+        suite,
+        purpose: new AssertionProofPurpose(),
+        documentLoader
+      });
+      expect(result.verified).to.be.false;
+      const {error} = result.results[0];
+      expect(error.message).to.include('Maximum deep iterations');
+    });
+
     it('should fail verification if "proofValue" is not string',
       async () => {
         const suite = new Ed25519Signature2020();
@@ -317,29 +413,8 @@ describe('Ed25519Signature2020', () => {
         });
         expect(result.verified).to.be.true;
       });
-    it('should throw error when verification method does not have' +
-      '2018 context', async () => {
-      const mockPublicKey2018WithoutContext = {...mockPublicKey2018};
-      // intentionally delete the context
-      delete mockPublicKey2018WithoutContext['@context'];
-      loader.addStatic(mockKeyPair2018.controller, controllerDoc2018);
-      loader.addStatic(mockPublicKey2018WithoutContext.id,
-        mockPublicKey2018WithoutContext);
-      const documentLoader = loader.build();
-      const suite = new Ed25519Signature2020();
-      const result = await jsigs.verify(signedCredential, {
-        suite,
-        purpose: new AssertionProofPurpose(),
-        documentLoader
-      });
-      expect(result.verified).to.be.false;
-      expect(result.results[0].error.name).equal('TypeError');
-      expect(result.results[0].error.message).equal(
-        'The verification method (key) must contain ' +
-        '\"https://w3id.org/security/suites/ed25519-2018/v1\" context.');
-    });
-    it('should throw error when verification method contains 2018 key' +
-      'but 2020 context', async () => {
+    it('should throw error when verification method contains 2018 key ' +
+      'with (not-matching) 2020 context', async () => {
       const mockPublicKey2018With2020Context = {...mockPublicKey2018};
       // intentionally modify the context to ed25519 2020 context
       mockPublicKey2018With2020Context['@context'] =
@@ -355,10 +430,9 @@ describe('Ed25519Signature2020', () => {
         documentLoader
       });
       expect(result.verified).to.be.false;
-      expect(result.results[0].error.name).equal('TypeError');
       expect(result.results[0].error.message).equal(
-        'The verification method (key) must contain ' +
-        '\"https://w3id.org/security/suites/ed25519-2018/v1\" context.');
+        'Context not supported ' +
+        '"https://w3id.org/security/suites/ed25519-2020/v1".');
     });
   });
 });

@@ -279,7 +279,7 @@ describe('Ed25519Signature2020', () => {
       expect(result.verified).to.be.true;
     });
 
-    it.skip('should fail to verify a document with a poison graph', async () => {
+    it.skip('should fail to verify document with a poison graph', async () => {
       const poisonCredential = {...signedCredential};
       const suite = new Ed25519Signature2020();
       poisonCredential.alumniOf = poisonData;

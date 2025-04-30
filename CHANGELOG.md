@@ -1,5 +1,11 @@
 # @digitalcredentials/ed25519-signature-2020 Changelog
 
+## 7.0.0 - 2025-04-30
+
+### Changed
+- **BREAKING**: Removes support for cjs
+- Updates from latest DigitalBazaar upstream
+
 ## 6.0.0 - 2024-09-17
 
 ### Changed
